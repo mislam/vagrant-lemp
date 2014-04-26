@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
+# Update
 apt-get update
+
+# Set timezone and install NTP
+echo "America/New_York" > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
+apt-get install -y ntp
+
+# Install build tools
 apt-get install -y build-essential
 
 # Install curl and git
