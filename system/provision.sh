@@ -6,8 +6,9 @@ apt-get install -y build-essential
 # Install curl and git
 apt-get install -y curl git
 
-# Choose the latest version of PHP instead of the default 5.3
+# Add the repositories to install the latest version of nginx and php5
 apt-get install -y python-software-properties
+add-apt-repository -y ppa:nginx/stable
 add-apt-repository -y ppa:ondrej/php5
 apt-get update
 
@@ -59,5 +60,5 @@ ln -s /vagrant/system/nginx/server.conf /etc/nginx/sites-available/default
 # Disable autostart from default init.d
 update-rc.d -f nginx disable
 
-# Create upstart job for Nginx
+# Create upstart job for nginx
 cp /vagrant/system/upstart/nginx.conf /etc/init/nginx.conf
