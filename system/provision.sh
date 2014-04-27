@@ -59,7 +59,7 @@ ln -s /vagrant/system/nginx/protect-system-files.conf /etc/nginx/conf/protect-sy
 su - vagrant -c "mkdir /vagrant/system/logs && touch /vagrant/system/logs/error.log && touch /vagrant/system/logs/access.log"
 
 # Symlink to the proper log directory
-ln -s /var/log/nginx /etc/nginx/logs
+ln -s /var/log/nginx /usr/share/nginx/logs
 
 # Configure default site using server.conf
 mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
