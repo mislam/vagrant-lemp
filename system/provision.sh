@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+# Define variables
+HOST=mysite
+FQDN=mysite.dev
+DB_NAME=mysite
+DB_USER=root
+DB_PASS=mysite
+
+# Change hostname
+sed -i "s/127.0.0.1\s*localhost.*/127.0.0.1\tlocalhost.localdomain\tlocalhost/g" /etc/hosts
+sed -i "s/127.0.1.1.*/127.0.1.1\t$FQDN\t$HOST/g" /etc/hosts
+echo $FQDN > /etc/hostname
+/etc/init.d/hostname restart
+
 # Update
 apt-get update
 
@@ -33,9 +46,9 @@ apt-get install -y php5-mysql php5-curl php5-gd php5-mcrypt
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
-# Install MySQL with root password `vagrant`
-debconf-set-selections <<< "mysql-server mysql-server/root_password password vagrant"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password vagrant"
+# Install MySQL with root password
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_PASS"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_PASS"
 apt-get install -y mysql-server
 
 # Install nginx
@@ -70,3 +83,15 @@ update-rc.d -f nginx disable
 
 # Create upstart job for nginx
 cp /vagrant/system/upstart/nginx.conf /etc/init/nginx.conf
+
+# Create public directory if doesn't exist
+su - vagrant -c "mkdir -p /vagrant/public"
+
+# Create database
+mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE $DB_NAME"
+
+# Create directory to store database snapshots
+su - vagrant -c "mkdir /vagrant/db"
+
+# Install sendmail
+apt-get install -y sendmail
