@@ -3,9 +3,13 @@
 # Define variables
 HOST=mysite
 FQDN=mysite.dev
-DB_NAME=mysite
-DB_USER=root
-DB_PASS=mysite
+DB_ROOT_PASS=mysite
+
+# Use colored prompt for all users
+echo -e "\nforce_color_prompt=yes" >> /etc/bash.bashrc
+
+# Change to "/vagrant" directory after login
+echo -e "\ncd /vagrant" >> /home/vagrant/.bashrc
 
 # Change hostname
 sed -i "s/127.0.0.1\s*localhost.*/127.0.0.1\tlocalhost.localdomain\tlocalhost/g" /etc/hosts
@@ -42,13 +46,21 @@ apt-get install -y php5-cli
 # Install some common PHP extensions
 apt-get install -y php5-mysql php5-curl php5-gd php5-mcrypt
 
+# Uncomment listen owner, group and mode
+sed -i "s/;listen.owner/listen.owner/g" /etc/php5/fpm/pool.d/www.conf
+sed -i "s/;listen.group/listen.group/g" /etc/php5/fpm/pool.d/www.conf
+sed -i "s/;listen.mode/listen.mode/g" /etc/php5/fpm/pool.d/www.conf
+
+# Restart PHP-FPM
+service php5-fpm restart
+
 # Install composer globally
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
 # Install MySQL with root password
-debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_PASS"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_PASS"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_ROOT_PASS"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_ROOT_PASS"
 apt-get install -y mysql-server
 
 # Install nginx
@@ -87,11 +99,12 @@ cp /vagrant/system/upstart/nginx.conf /etc/init/nginx.conf
 # Create public directory if doesn't exist
 su - vagrant -c "mkdir -p /vagrant/public"
 
-# Create database
-mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE $DB_NAME"
-
 # Create directory to store database snapshots
 su - vagrant -c "mkdir /vagrant/db"
 
 # Install sendmail
 apt-get install -y sendmail
+
+# Install composer globally
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
