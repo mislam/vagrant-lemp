@@ -51,6 +51,9 @@ sed -i "s/;listen.owner/listen.owner/g" /etc/php5/fpm/pool.d/www.conf
 sed -i "s/;listen.group/listen.group/g" /etc/php5/fpm/pool.d/www.conf
 sed -i "s/;listen.mode/listen.mode/g" /etc/php5/fpm/pool.d/www.conf
 
+# Set cgi.fix_pathinfo to 0
+sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php5/fpm/php.ini
+
 # Restart PHP-FPM
 service php5-fpm restart
 
@@ -104,7 +107,3 @@ su - vagrant -c "mkdir /vagrant/db"
 
 # Install sendmail
 apt-get install -y sendmail
-
-# Install composer globally
-curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
