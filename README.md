@@ -1,9 +1,10 @@
 ## Installation
 
-First run `vagrant up` which will setup the server for the first time and perform provisioning by installing all necessary software.
+Run `vagrant up` which will setup the server for the first time and perform provisioning by installing all necessary software.
 
-	cd /path/to/project/dir
 	vagrant up
+
+### Reboot
 
 Reboot the server so that `upstart` kicks-off nginx at startup.
 
@@ -21,15 +22,3 @@ Instead of accessing the website from the IP address, let's access it from `mysi
 Add the following line:
 
 	192.168.50.100    mysite.dev
-
-
-## Database Backup
-
-To create a database snapshot, issue the following command from the VM. This will store the backup file under `db` directory.
-
-	vagrant ssh
-	mysqldump -u root -pmysite mysite > /vagrant/db/mysite.sql
-
-To restore from a previous snapshot:
-
-	mysql -u root -pmysite mysite < /vagrant/db/mysite.sql

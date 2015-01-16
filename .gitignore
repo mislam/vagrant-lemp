@@ -1,6 +1,2 @@
 .vagrant/
-node_modules/
-npm-debug.log
-/system/logs/
-.DS_Store
-Thumbs.db
+/logs/
