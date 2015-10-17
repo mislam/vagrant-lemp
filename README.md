@@ -14,4 +14,9 @@ Instead of accessing the website from the IP address, let's access it from `mysi
 
 Add the following line:
 
-	192.168.50.100    mysite.dev
+	192.168.50.100 mysite.dev www.mysite.dev
+
+Now both of the following URLs should point to the same location:
+
+- [`http://mysite.dev/`](http://mysite.dev/)
+- [`http://www.mysite.dev/`](http://www.mysite.dev/)
