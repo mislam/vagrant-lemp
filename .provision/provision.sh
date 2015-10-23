@@ -12,9 +12,6 @@ _PWD=`pwd`
 # Use colored prompt for all users
 echo -e "\nforce_color_prompt=yes" >> /etc/bash.bashrc
 
-# Change to "/vagrant" directory after login
-echo -e "\ncd /vagrant" >> /home/vagrant/.bashrc
-
 # Change hostname
 echo $HOST > /etc/hostname
 service hostname restart
@@ -29,6 +26,12 @@ apt-get install -y ntp
 
 # Install git
 apt-get install -y git
+
+# Install dotfiles
+su - vagrant -c "git clone https://github.com/mohislm/dotfiles.git /home/vagrant/.dotfiles && /home/vagrant/.dotfiles/scripts/install.sh"
+
+# Change to "/vagrant" directory after login
+echo -e "\ncd /vagrant" >> /home/vagrant/.bashrc
 
 # Preconfigure MySQL root password before installation
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"
