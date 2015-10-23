@@ -24,8 +24,8 @@ echo "America/New_York" > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
 apt-get install -y ntp
 
-# Install git
-apt-get install -y git
+# Install git and unzip
+apt-get install -y git unzip
 
 # Install dotfiles
 su - vagrant -c "git clone https://github.com/mohislm/dotfiles.git /home/vagrant/.dotfiles && /home/vagrant/.dotfiles/scripts/install.sh"
@@ -37,8 +37,11 @@ echo -e "\ncd /vagrant" >> /home/vagrant/.bashrc
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASS"
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASS"
 
-# Install php5, mysql and nginx
-apt-get install -y php5-fpm php5-cli php5-mysql mysql-server nginx
+# Install php5, mysql, nginx, memcached and few other extensions
+apt-get install -y php5-fpm php5-cli php5-mysqlnd php5-memcached mysql-server nginx memcached
+
+# Enable Mcrypt PHP extension
+php5enmod mcrypt
 
 # Disable nginx autostart by init.d
 update-rc.d -f nginx disable
@@ -78,7 +81,7 @@ sed -i "s/access_log\s\+logs\\/static.log/access_log \\/var\\/log\\/nginx\\/stat
 touch /var/log/nginx/static.log
 
 # Create `public` and `logs` directory
-su - vagrant -c "mkdir -p /vagrant/public && rm -rf /vagrant/logs && mkdir -p /vagrant/logs"
+su - vagrant -c "rm -rf /vagrant/logs && mkdir -p /vagrant/logs"
 
 # Configure default site using http.conf
 rm /etc/nginx/sites-available/*
@@ -89,6 +92,22 @@ ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 cat > /etc/udev/rules.d/50-vagrant-mount.rules << _EOF_
 SUBSYSTEM=="bdi",ACTION=="add",RUN+="/usr/bin/screen -m -d /bin/bash -c 'sleep 5; /vagrant/.provision/bootstrap'"
 _EOF_
+
+# Install laravel dependencies if laravel is already installed
+if [ -f /vagrant/public/index.php ]; then
+  su - vagrant -c "cd /vagrant && composer install"
+
+# Otherwise
+else
+  # Download latest version of laravel
+  su - vagrant -c "cd /tmp && wget http://cabinet.laravel.com/latest.zip && unzip latest.zip -d laravel && rm latest.zip"
+  rm /tmp/laravel/*.md
+  rsync -a /tmp/laravel/ /vagrant/
+  rm -rf /tmp/laravel
+  echo "/.vagrant" >> /vagrant/.gitignore
+  echo "/logs" >> /vagrant/.gitignore
+  su - vagrant -c "cd /vagrant && composer run-script post-root-package-install && composer run-script post-install-cmd && composer run-script post-create-project-cmd"
+fi
 
 # Bootstrap after vagrant up
 /vagrant/.provision/bootstrap
