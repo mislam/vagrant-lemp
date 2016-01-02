@@ -77,8 +77,11 @@ sed -i "s/sendfile\s\+on;/sendfile        off;\n\n  types_hash_max_size 2048;\n 
 sed -i "s/access_log\s\+logs\\/static.log/access_log \\/var\\/log\\/nginx\\/static.log/g" /etc/nginx/h5bp/location/expires.conf
 touch /var/log/nginx/static.log
 
-# Create `public` and `logs` directory
-su - vagrant -c "mkdir -p /vagrant/public && rm -rf /vagrant/logs && mkdir -p /vagrant/logs"
+# Create `logs` directory
+su - vagrant -c "rm -rf /vagrant/logs && mkdir -p /vagrant/logs"
+
+# Download the latest version of WordPress into the `public` directory
+su - vagrant -c "cd /tmp && wget http://wordpress.org/latest.tar.gz && tar -xzvf latest.tar.gz && rsync -r wordpress/* /vagrant/public && rm /tmp/latest.tar.gz && rm -rf /tmp/wordpress"
 
 # Configure default site using http.conf
 rm /etc/nginx/sites-available/*

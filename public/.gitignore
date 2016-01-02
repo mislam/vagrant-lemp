@@ -1,0 +1,17 @@
+# Ignore everything in the root except the `wp-content` directory
+/*
+!wp-content/
+
+# Ignore default themes, plugins and index pages
+wp-content/themes/twenty*
+wp-content/plugins/akismet
+wp-content/plugins/hello.php
+wp-content/index.php
+wp-content/themes/index.php
+wp-content/plugins/index.php
+
+# Ignore all files starting with a dot
+.*
+
+# Track this file .gitignore (i.e. do NOT ignore it)
+!.gitignore
