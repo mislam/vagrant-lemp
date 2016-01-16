@@ -104,8 +104,8 @@ else
   rm /tmp/laravel/*.md
   rsync -a /tmp/laravel/ /vagrant/
   rm -rf /tmp/laravel
-  echo "/.vagrant" >> /vagrant/.gitignore
-  echo "/logs" >> /vagrant/.gitignore
+  echo ".vagrant/" >> /vagrant/.gitignore
+  echo "/logs/" >> /vagrant/.gitignore
   su - vagrant -c "cd /vagrant && composer run-script post-root-package-install && composer run-script post-install-cmd && composer run-script post-create-project-cmd"
 fi
 
