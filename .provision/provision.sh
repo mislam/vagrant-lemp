@@ -104,8 +104,8 @@ else
   rm /tmp/lumen/*.md
   rsync -a /tmp/lumen/ /vagrant/
   rm -rf /tmp/lumen
-  echo "/.vagrant" >> /vagrant/.gitignore
-  echo "/logs" >> /vagrant/.gitignore
+  echo ".vagrant/" >> /vagrant/.gitignore
+  echo "/logs/" >> /vagrant/.gitignore
 fi
 
 # Bootstrap after vagrant up
