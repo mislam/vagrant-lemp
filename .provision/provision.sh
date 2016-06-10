@@ -28,7 +28,7 @@ apt-get install -y ntp
 apt-get install -y git
 
 # Install dotfiles
-su - vagrant -c "git clone https://github.com/mohislm/dotfiles.git /home/vagrant/.dotfiles && /home/vagrant/.dotfiles/scripts/install.sh"
+su - vagrant -c "git clone https://github.com/mislam/dotfiles.git /home/vagrant/.dotfiles && /home/vagrant/.dotfiles/scripts/install.sh"
 
 # Change to "/vagrant" directory after login
 echo -e "\ncd /vagrant" >> /home/vagrant/.bashrc
